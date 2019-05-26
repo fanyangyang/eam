@@ -2,7 +2,6 @@ module github.com/fanyangyang/eam
 
 require (
 	github.com/astaxie/beego v1.11.1
-	github.com/beego/bee v1.10.0 // indirect
 	github.com/mattn/go-sqlite3 v1.10.1-0.20190523151927-afa0250ddf60
 )
 

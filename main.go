@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
-	"github.com/fanyangyang/eam/models"
+	_ "github.com/fanyangyang/eam/models"
+	_ "github.com/fanyangyang/eam/routers"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -17,15 +17,5 @@ func init() {
 func main() {
 	o := orm.NewOrm()
 	o.Using("default") // 默认使用 default，你可以指定为其他数据库
-
-	profile := new(models.Profile)
-	profile.Age = 30
-
-	user := new(models.User)
-	user.Profile = profile
-	user.Name = "slene"
-
-	fmt.Println(o.Insert(profile))
-	fmt.Println(o.Insert(user))
 	beego.Run()
 }

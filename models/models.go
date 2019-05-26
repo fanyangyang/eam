@@ -1,35 +1,75 @@
 package models
 
-import "github.com/astaxie/beego/orm"
+import (
+	"github.com/astaxie/beego/orm"
+)
+
+type Department struct {
+	Id         int
+	ChargeId   int
+	ChargeName string
+	Count      int
+	Desc       string
+}
+
+type Position struct {
+	Id   int
+	Desc string
+}
 
 type User struct {
-	Id          int
-	Name        string
-	Profile     *Profile   `orm:"rel(one)"` // OneToOne relation
-	Post        []*Post `orm:"reverse(many)"` // 设置一对多的反向关系
+	Id           int
+	Name         string
+	Sex          int
+	Age          int
+	DepartmentId int
+	PositionId   int
+	BoardDate    string
+	Item         []*Item `orm:"reverse(many)"`
+	Status       int     // 在职、离职
 }
 
-type Profile struct {
-	Id          int
-	Age         int16
-	User        *User   `orm:"reverse(one)"` // 设置一对一反向关系(可选)
+type Item struct {
+	Id              int
+	Name            string
+	Number          string  //手机号
+	Balance         float64 //话费余额
+	User            *User   `orm:"rel(fk)"`
+	SerialCode      string
+	ShoppingCode    string
+	SourcePlateForm string
+	ShopDate        string
+	ITypeId         int    //资产类别
+	Desc            string // TODO 确定orm是否支持自动添加时间
 }
 
-type Post struct {
-	Id    int
-	Title string
-	User  *User  `orm:"rel(fk)"`    //设置一对多关系
-	Tags  []*Tag `orm:"rel(m2m)"`
+type IType struct {
+	Id       int
+	ParentId int
+	Name     string
+	Desc     string
 }
 
-type Tag struct {
-	Id    int
-	Name  string
-	Posts []*Post `orm:"reverse(many)"`
+type AskList struct {
+	Id      int
+	AType   int // 申领，申还，申换
+	WhoId   int
+	Who     string
+	forWhat string
+	Date    string
+	Status  int //TODO 申请状态
+	Desc    string
+}
+
+type TODO struct {
+	Id     int
+	Title  string
+	Body   string
+	Status int //新建、进行中、已完成
+	Desc   string
 }
 
 func init() {
 	// 需要在init中注册定义的model
-	orm.RegisterModel(new(User), new(Post), new(Profile), new(Tag))
+	orm.RegisterModel(new(User), new(Department), new(Position), new(Item), new(IType), new(AskList), new(TODO))
 }
-
