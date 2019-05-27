@@ -3,16 +3,24 @@ package models
 import "github.com/astaxie/beego/orm"
 
 var Ormer orm.Ormer
+
 func init() {
 	// 需要在init中注册定义的model
 	orm.RegisterModel(new(User), new(Department), new(Position), new(Item), new(IType), new(AskList), new(TODO))
 }
 
-func NewOrm(){
+func NewOrm() {
 	Ormer = orm.NewOrm()
 	Ormer.Using("default") // 默认使用 default，你可以指定为其他数据库
 }
 
+type Account struct {
+	Id       int
+	UserName string
+	Password string
+	Number   string
+	Mail     string
+}
 
 type Department struct {
 	Id         int
@@ -28,15 +36,15 @@ type Position struct {
 }
 
 type User struct {
-	Id           int
-	Name         string
-	Sex          int
-	Age          int
-	DepartmentId int
-	PositionId   int
-	BoardDate    string
-	Item         []*Item `orm:"reverse(many)"`
-	Status       int     // 在职、离职
+	Id           int     `json:"id"`
+	Name         string  `json:"name"`
+	Sex          int     `json:"sex"`
+	Age          int     `json:"age"`
+	DepartmentId int     `json:"department_id"`
+	PositionId   int     `json:"position_id"`
+	BoardDate    string  `json:"board_date"`
+	Item         []*Item `json:"item" orm:"reverse(many)"`
+	Status       int     `json:"status"` // 在职、离职
 }
 
 type Item struct {
@@ -78,4 +86,3 @@ type TODO struct {
 	Status int //新建、进行中、已完成
 	Desc   string
 }
-

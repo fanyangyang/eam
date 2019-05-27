@@ -1,5 +1,5 @@
 package controllers
 
-type TodoController struct {
+type AdminController struct {
 	BaseController
 }
