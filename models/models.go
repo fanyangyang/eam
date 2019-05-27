@@ -1,8 +1,18 @@
 package models
 
-import (
-	"github.com/astaxie/beego/orm"
-)
+import "github.com/astaxie/beego/orm"
+
+var Ormer orm.Ormer
+func init() {
+	// 需要在init中注册定义的model
+	orm.RegisterModel(new(User), new(Department), new(Position), new(Item), new(IType), new(AskList), new(TODO))
+}
+
+func NewOrm(){
+	Ormer = orm.NewOrm()
+	Ormer.Using("default") // 默认使用 default，你可以指定为其他数据库
+}
+
 
 type Department struct {
 	Id         int
@@ -69,7 +79,3 @@ type TODO struct {
 	Desc   string
 }
 
-func init() {
-	// 需要在init中注册定义的model
-	orm.RegisterModel(new(User), new(Department), new(Position), new(Item), new(IType), new(AskList), new(TODO))
-}

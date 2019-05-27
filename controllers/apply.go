@@ -2,6 +2,6 @@ package controllers
 
 import "github.com/astaxie/beego"
 
-type AskListController struct {
+type ApplyController struct {
 	beego.Controller
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"github.com/fanyangyang/eam/models"
 	_ "github.com/fanyangyang/eam/models"
 	_ "github.com/fanyangyang/eam/routers"
 	_ "github.com/mattn/go-sqlite3"
@@ -15,7 +16,6 @@ func init() {
 }
 
 func main() {
-	o := orm.NewOrm()
-	o.Using("default") // 默认使用 default，你可以指定为其他数据库
+	models.NewOrm()
 	beego.Run()
 }
