@@ -16,6 +16,7 @@ func NewOrm() {
 
 type RespSuccess struct {
 	Success bool   `json:"success"`
+	Message string `json:"message"`
 	Desc    string `json:"desc"`
 }
 
@@ -42,18 +43,18 @@ type Position struct {
 
 type User struct {
 	Id           int     `json:"id"`
-	Name         string  `json:"name"`
+	Name         string  `json:"name"` // TODO mail,personalPhoneNum,address
 	Sex          int     `json:"sex"`
 	Age          int     `json:"age"`
 	DepartmentId int     `json:"department_id"`
-	PositionId   int     `json:"position_id"`
-	BoardDate    string  `json:"board_date"`
+	PositionId   int     `json:"position_id"` // 添加TODO，说明多少人的职位未分配，部门未分配
+	BoardDate    string  `json:"board_date"`  //入职时间
 	Item         []*Item `json:"item" orm:"reverse(many)"`
-	Status       int     `json:"status"` // 在职、离职
+	Status       int     `json:"status"` // 1:在职、2:离职
 }
 
 type UserRet struct {
-	Count    int64  `json:"count"`
+	TotalNum int64  `json:"total_num"`
 	PageNum  int    `json:"page_num"`
 	PageSize int    `json:"page_size"`
 	Users    []User `json:"users"`
@@ -64,7 +65,7 @@ type Item struct {
 	Name            string
 	Number          string  //手机号
 	Balance         float64 //话费余额
-	User            *User `orm:"rel(fk)"`
+	User            *User   `orm:"rel(fk)"`
 	SerialCode      string
 	ShoppingCode    string
 	SourcePlateForm string
