@@ -14,6 +14,11 @@ func NewOrm() {
 	Ormer.Using("default") // 默认使用 default，你可以指定为其他数据库
 }
 
+type RespSuccess struct {
+	Success bool   `json:"success"`
+	Desc    string `json:"desc"`
+}
+
 type Account struct {
 	Id       int
 	UserName string
@@ -47,12 +52,19 @@ type User struct {
 	Status       int     `json:"status"` // 在职、离职
 }
 
+type UserRet struct {
+	Count    int64  `json:"count"`
+	PageNum  int    `json:"page_num"`
+	PageSize int    `json:"page_size"`
+	Users    []User `json:"users"`
+}
+
 type Item struct {
 	Id              int
 	Name            string
 	Number          string  //手机号
 	Balance         float64 //话费余额
-	User            *User   `orm:"rel(fk)"`
+	User            *User `orm:"rel(fk)"`
 	SerialCode      string
 	ShoppingCode    string
 	SourcePlateForm string

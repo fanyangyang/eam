@@ -15,13 +15,20 @@ func (c *UserController) Get() {
 	fmt.Println("user get")
 	var users []models.User
 	//分页：o.QueryTable("user").Limit(pageSize,(ps-1)*pageSize).All(user)
-	n, err := models.Ormer.QueryTable("user").All(&users) //查询全部
+	n, err := models.Ormer.QueryTable("user").All(&users) //查询全部,TODO 分页查询,需要结合路由进行传参数
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	fmt.Println("n is : ", n)
+	c.Data["json"] = &models.UserRet{
+		Count:    n,
+		PageNum:  0,
+		PageSize: 0,
+		Users:    users,
+	}
+
+	c.ServeJSON()
 }
 
 //对应增加操作
@@ -32,6 +39,19 @@ func (c *UserController) Post() {
 		fmt.Println("parse user error")
 	}
 	fmt.Printf("newOne: %#v\n", newOne)
+
+	resp := models.RespSuccess{}
+	_, err := models.Ormer.Insert(&newOne) //返回的n是表中的数据总数
+	if err != nil {
+		resp.Success = false
+		resp.Desc = err.Error()
+	} else {
+		resp.Success = true
+	}
+
+	c.Data["json"] = &resp
+
+	c.ServeJSON()
 }
 
 //对应修改操作
