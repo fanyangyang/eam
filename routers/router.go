@@ -16,7 +16,7 @@ func init() {
 	入职，新增操作，提供员工基础信息，提供单个操作和批量操作（excel）
 	post：insert
 	 */
-	beego.Router("/user/getin", &controllers.UserController{}, "post:GetIn")
+	beego.Router("/user/getin", &controllers.UserController{}, "post:MultiInput")
 	/*
 	离职，修改操作，提供员工姓名，提交前先进行确认，需要先查询出该员工信息进行确认
 	delete：update

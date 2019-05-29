@@ -4,6 +4,24 @@ import "github.com/astaxie/beego/orm"
 
 var Ormer orm.Ormer
 
+const (
+	USER_STATUS_ON  = 1
+	USER_STATUS_OFF = 2
+
+	TODO_STATUS_NEW = 1
+	TODO_STATUS_ING = 2
+	TODO_STATUS_DONE = 3
+	TODO_STATUS_TIMEOUT = 4
+
+	TODO_LEVEL_NORMAL = 1
+	TODO_LEVEL_IMPORTANT = 2
+
+	DEFAULT_PAGE_SIZE = 10
+	DEFAULT_PAGE_NUM  = 1
+
+	DEFAULT_ID = 0
+)
+
 func init() {
 	// 需要在init中注册定义的model
 	orm.RegisterModel(new(User), new(Department), new(Position), new(Item), new(IType), new(AskList), new(TODO))
@@ -65,7 +83,7 @@ type Item struct {
 	Name            string
 	Number          string  //手机号
 	Balance         float64 //话费余额
-	User            *User   `orm:"rel(fk)"`
+	User            *User `orm:"rel(fk)"`
 	SerialCode      string
 	ShoppingCode    string
 	SourcePlateForm string
@@ -93,9 +111,18 @@ type AskList struct {
 }
 
 type TODO struct {
-	Id     int
-	Title  string
-	Body   string
-	Status int //新建、进行中、已完成
-	Desc   string
+	Id     int `json:"id"`
+	Title  string `json:"title"`
+	Body   string `json:"body"`
+	Status int `json:"status"` //1:新建、2:进行中、3:已完成、4:已超时
+	Desc   string `json:"desc"`
+	DeadLine string `json:"dead_line"`
+	Level int `json:"level"`//1:一般、 2:重要
+}
+
+type TODORet struct {
+	TotalNum int64  `json:"total_num"`
+	PageNum  int    `json:"page_num"`
+	PageSize int    `json:"page_size"`
+	TODOs    []TODO `json:"todos"`
 }
