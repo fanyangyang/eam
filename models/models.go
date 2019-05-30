@@ -16,6 +16,9 @@ const (
 	TODO_LEVEL_NORMAL = 1
 	TODO_LEVEL_IMPORTANT = 2
 
+	ITYPE_STATUS_ON = 1
+	ITYPE_STATUS_OFF = 2
+
 	DEFAULT_PAGE_SIZE = 10
 	DEFAULT_PAGE_NUM  = 1
 
@@ -93,10 +96,18 @@ type Item struct {
 }
 
 type IType struct {
-	Id       int
-	ParentId int
-	Name     string
-	Desc     string
+	Id       int `json:"id"`
+	ParentId int `json:"parent_id"`
+	Name     string `json:"name"`
+	Desc     string `json:"desc"`
+	Status int `json:"status"` //1:on、2：off
+}
+
+type ITypeRet struct {
+	TotalNum int64 `json:"total_num"`
+	PageNum int `json:"page_num"`
+	PageSize int `json:"page_size"`
+	ITypes []IType `json:"i_types"`
 }
 
 type AskList struct {

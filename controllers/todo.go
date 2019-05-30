@@ -122,3 +122,31 @@ func (c *TodoController) Put() {
 
 	c.ServeJSON()
 }
+
+func (c *TodoController) Delete(){
+	//必须携带ID
+	var target models.TODO
+	resp := models.RespSuccess{}
+	c.Data["json"] = &resp
+
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &target); err != nil {
+		fmt.Println("parse todo error")
+		resp.Success = false
+		resp.Desc = err.Error()
+		c.ServeJSON()
+
+		return
+	}
+
+	_, err := models.Ormer.Delete(&target)
+	if err != nil {
+		resp.Success = false
+		resp.Desc = err.Error()
+		c.ServeJSON()
+		return
+	} else {
+		resp.Success = true
+	}
+
+	c.ServeJSON()
+}
