@@ -8,16 +8,20 @@ const (
 	USER_STATUS_ON  = 1
 	USER_STATUS_OFF = 2
 
-	TODO_STATUS_NEW = 1
-	TODO_STATUS_ING = 2
-	TODO_STATUS_DONE = 3
+	TODO_STATUS_NEW     = 1
+	TODO_STATUS_ING     = 2
+	TODO_STATUS_DONE    = 3
 	TODO_STATUS_TIMEOUT = 4
 
-	TODO_LEVEL_NORMAL = 1
+	TODO_LEVEL_NORMAL    = 1
 	TODO_LEVEL_IMPORTANT = 2
 
-	ITYPE_STATUS_ON = 1
+	ITYPE_STATUS_ON  = 1
 	ITYPE_STATUS_OFF = 2
+
+	ITEM_STATUS_STORAGE = 1
+	ITEM_STATUS_USE     = 2
+	ITEM_STATUS_BACK    = 3
 
 	DEFAULT_PAGE_SIZE = 10
 	DEFAULT_PAGE_NUM  = 1
@@ -82,32 +86,43 @@ type UserRet struct {
 }
 
 type Item struct {
-	Id              int
-	Name            string
-	Number          string  //手机号
-	Balance         float64 //话费余额
-	User            *User `orm:"rel(fk)"`
-	SerialCode      string
-	ShoppingCode    string
-	SourcePlateForm string
-	ShopDate        string
-	ITypeId         int    //资产类别
-	Desc            string // TODO 确定orm是否支持自动添加时间
+	Id     int    `json:"id"`
+	Name   string `json:"name"`
+	Number string `json:"number"` //手机号
+	//Balance         float64 `json:"balance"` //话费余额
+	User            *User  `orm:"rel(fk)" json:"user"`
+	SerialCode      string `json:"serial_code"`
+	ShoppingCode    string `json:"shopping_code"`
+	SourcePlateForm string `json:"source_plate_form"`
+	ShopDate        string `json:"shop_date"`
+	IType           *IType `orm:"rel(fk)" json:"i_type"` //资产类别
+	Desc            string `json:"desc"`   // TODO 确定orm是否支持自动添加时间
+	Status          int    `json:"status"` //1：在库 2：已分配 3：回收
+}
+
+// TODO 话费充值记录
+
+type ItemRet struct {
+	TotalNum int64  `json:"total_num"`
+	PageNum  int    `json:"page_num"`
+	PageSize int    `json:"page_size"`
+	Items    []Item `json:"items"`
 }
 
 type IType struct {
-	Id       int `json:"id"`
-	ParentId int `json:"parent_id"`
+	Id       int    `json:"id"`
+	ParentId int    `json:"parent_id"`
 	Name     string `json:"name"`
 	Desc     string `json:"desc"`
-	Status int `json:"status"` //1:on、2：off
+	Status   int    `json:"status"` //1:on、2：off
+	Items []*Item `json:"items" orm:"reverse(many)"`
 }
 
 type ITypeRet struct {
-	TotalNum int64 `json:"total_num"`
-	PageNum int `json:"page_num"`
-	PageSize int `json:"page_size"`
-	ITypes []IType `json:"i_types"`
+	TotalNum int64   `json:"total_num"`
+	PageNum  int     `json:"page_num"`
+	PageSize int     `json:"page_size"`
+	ITypes   []IType `json:"i_types"`
 }
 
 type AskList struct {
@@ -122,13 +137,13 @@ type AskList struct {
 }
 
 type TODO struct {
-	Id     int `json:"id"`
-	Title  string `json:"title"`
-	Body   string `json:"body"`
-	Status int `json:"status"` //1:新建、2:进行中、3:已完成、4:已超时
-	Desc   string `json:"desc"`
+	Id       int    `json:"id"`
+	Title    string `json:"title"`
+	Body     string `json:"body"`
+	Status   int    `json:"status"` //1:新建、2:进行中、3:已完成、4:已超时
+	Desc     string `json:"desc"`
 	DeadLine string `json:"dead_line"`
-	Level int `json:"level"`//1:一般、 2:重要
+	Level    int    `json:"level"` //1:一般、 2:重要
 }
 
 type TODORet struct {

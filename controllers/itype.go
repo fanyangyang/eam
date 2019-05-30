@@ -117,6 +117,7 @@ func (c *ITypeController) Put(){
 }
 
 func (c *ITypeController) Delete(){
+	// TODO 子类是否也一并删除，或者给出提示，是否删除子类
 	fmt.Println("itype delete")
 	//必须携带ID
 	var target models.IType
