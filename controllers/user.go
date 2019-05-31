@@ -27,11 +27,17 @@ func (c *UserController) Get() {
 	if err != nil {
 		status = models.USER_STATUS_ON
 	}
-	n, err := models.Ormer.QueryTable("user").Filter("status",status).Limit(pageSize, (pageNum-1)*pageSize).OrderBy("id").All(&users) //分页查询,需要结合路由进行传参数
+	n, err := models.Ormer.QueryTable("user").Filter("status", status).Limit(pageSize, (pageNum-1)*pageSize).OrderBy("id").All(&users) //分页查询,需要结合路由进行传参数
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+
+	for i, _ := range users {
+		models.Ormer.LoadRelated(&users[i], "department")
+		models.Ormer.LoadRelated(&users[i], "position")
+	}
+
 	c.Data["json"] = &models.UserRet{
 		TotalNum: n,
 		PageNum:  pageNum,
@@ -47,6 +53,7 @@ func (c *UserController) Post() {
 	fmt.Println("user post")
 	var newOne models.User
 	var err error
+	var id int64
 	resp := models.RespSuccess{}
 	c.Data["json"] = &resp
 
@@ -57,25 +64,27 @@ func (c *UserController) Post() {
 		return
 	}
 
+
+
+	newOne.Status = models.USER_STATUS_ON
+
+	if id, err = models.Ormer.Insert(&newOne); err != nil { //返回的n是表中的数据总数
+		resp.Success = false
+		resp.Desc = err.Error()
+	} else {
+		resp.Success = true
+	}
+
 	if newOne.Department.Id == models.DEFAULT_ID {
 		// TODO 添加TODO，说明未分配部门
-		helper.AddTODO(models.TODO{Title: helper.DEPARTMENT_NOT_SET})
+		helper.AddTODO(models.TODO{Title: helper.DEPARTMENT_NOT_SET},int(id),newOne.Name)
 		resp.Message = "" // TODO message 扩展
 	}
 
 	if newOne.Position.Id == models.DEFAULT_ID {
 		// TODO 添加TODO，说明未分配至味
-		helper.AddTODO(models.TODO{Title: helper.POSITION_NOT_SET})
+		helper.AddTODO(models.TODO{Title: helper.POSITION_NOT_SET},int(id),newOne.Name)
 		resp.Message = "" // TODO message 扩展，支持多条消息，提示待办事件已经添加到待办事件列表中
-	}
-
-	newOne.Status = models.USER_STATUS_ON
-
-	if _, err = models.Ormer.Insert(&newOne); err != nil { //返回的n是表中的数据总数
-		resp.Success = false
-		resp.Desc = err.Error()
-	} else {
-		resp.Success = true
 	}
 
 	c.ServeJSON()
@@ -148,6 +157,7 @@ func (c *UserController) MultiInput() {
 	// TODO 抽象出post函数，确定入职离职等更新用户的操作
 	fmt.Println("user post")
 	var newOne models.User
+	var id int64
 	resp := models.RespSuccess{}
 	c.Data["json"] = &resp
 
@@ -161,13 +171,13 @@ func (c *UserController) MultiInput() {
 
 	if newOne.Department.Id == models.DEFAULT_ID {
 		// TODO 添加TODO，说明未分配部门
-		helper.AddTODO(models.TODO{Title: helper.DEPARTMENT_NOT_SET})
+		helper.AddTODO(models.TODO{Title: helper.DEPARTMENT_NOT_SET},int(id),newOne.Name)
 		resp.Message = "" // TODO message 扩展
 	}
 
 	if newOne.Position.Id == models.DEFAULT_ID {
 		// TODO 添加TODO，说明未分配至味
-		helper.AddTODO(models.TODO{Title: helper.POSITION_NOT_SET})
+		helper.AddTODO(models.TODO{Title: helper.POSITION_NOT_SET},int(id),newOne.Name)
 		resp.Message = "" // TODO message 扩展，支持多条消息，提示待办事件已经添加到待办事件列表中
 	}
 
@@ -251,5 +261,3 @@ TODO 用户相关报表
 比如：每月入职数量
 	相比上月入职率
  */
-
-
