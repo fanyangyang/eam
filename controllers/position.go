@@ -32,6 +32,10 @@ func (c *PositionController) Get() {
 		fmt.Println(err)
 		return
 	}
+
+	for i, _ := range positions {
+		models.Ormer.LoadRelated(&positions[i],"users")
+	}
 	c.Data["json"] = &models.PositionRet{
 		TotalNum:    n,
 		PageNum:     pageNum,
