@@ -95,8 +95,8 @@ type User struct {
 	Name       string      `json:"name"` // TODO mail,personalPhoneNum,address
 	Sex        int         `json:"sex"`
 	Age        int         `json:"age"`
-	Department *Department `orm:"rel(fk)" json:"department_id"`
-	Position   *Position   `orm:"rel(fk)" json:"position_id"` // 添加TODO，说明多少人的职位未分配，部门未分配
+	Department *Department `orm:"rel(fk)" json:"department"`
+	Position   *Position   `orm:"rel(fk)" json:"position"` // 添加TODO，说明多少人的职位未分配，部门未分配
 	BoardDate  string      `json:"board_date"`                //入职时间
 	Item       []*Item     `json:"item" orm:"reverse(many)"`
 	Status     int         `json:"status"` // 1:在职、2:离职

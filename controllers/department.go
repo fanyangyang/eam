@@ -32,6 +32,12 @@ func (c *DepartmentController) Get() {
 		fmt.Println(err)
 		return
 	}
+
+	for i, _ := range departments {// TODO 二次循环获取数据，会不会比较慢？？
+		models.Ormer.LoadRelated(&departments[i],"users")
+		models.Ormer.LoadRelated(&departments[i],"charge")
+	}
+
 	c.Data["json"] = &models.DepartmentRet{
 		TotalNum:    n,
 		PageNum:     pageNum,

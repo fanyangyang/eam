@@ -16,6 +16,7 @@ func init() {
 }
 
 func main() {
+	orm.Debug = true
 	models.NewOrm()
 	beego.Run()
 }
