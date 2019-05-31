@@ -57,13 +57,13 @@ func (c *UserController) Post() {
 		return
 	}
 
-	if newOne.DepartmentId == models.DEFAULT_ID {
+	if newOne.Department.Id == models.DEFAULT_ID {
 		// TODO 添加TODO，说明未分配部门
 		helper.AddTODO(models.TODO{Title: helper.DEPARTMENT_NOT_SET})
 		resp.Message = "" // TODO message 扩展
 	}
 
-	if newOne.PositionId == models.DEFAULT_ID {
+	if newOne.Position.Id == models.DEFAULT_ID {
 		// TODO 添加TODO，说明未分配至味
 		helper.AddTODO(models.TODO{Title: helper.POSITION_NOT_SET})
 		resp.Message = "" // TODO message 扩展，支持多条消息，提示待办事件已经添加到待办事件列表中
@@ -159,13 +159,13 @@ func (c *UserController) MultiInput() {
 		return
 	}
 
-	if newOne.DepartmentId == models.DEFAULT_ID {
+	if newOne.Department.Id == models.DEFAULT_ID {
 		// TODO 添加TODO，说明未分配部门
 		helper.AddTODO(models.TODO{Title: helper.DEPARTMENT_NOT_SET})
 		resp.Message = "" // TODO message 扩展
 	}
 
-	if newOne.PositionId == models.DEFAULT_ID {
+	if newOne.Position.Id == models.DEFAULT_ID {
 		// TODO 添加TODO，说明未分配至味
 		helper.AddTODO(models.TODO{Title: helper.POSITION_NOT_SET})
 		resp.Message = "" // TODO message 扩展，支持多条消息，提示待办事件已经添加到待办事件列表中
@@ -214,11 +214,11 @@ func (c *UserController) Leave() {
 func update(target models.User) error {
 	cols := make([]string, 0)
 
-	if target.PositionId != models.DEFAULT_ID {
+	if target.Position.Id != models.DEFAULT_ID {
 		cols = append(cols, "position_id")
 	}
 
-	if target.DepartmentId != models.DEFAULT_ID {
+	if target.Department.Id != models.DEFAULT_ID {
 		cols = append(cols, "department_id")
 	}
 

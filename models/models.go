@@ -23,6 +23,12 @@ const (
 	ITEM_STATUS_USE     = 2
 	ITEM_STATUS_BACK    = 3
 
+	DEPARTMENT_STATUS_ON  = 1
+	DEPARTMENT_STATUS_OFF = 2
+
+	POSITION_STATUS_ON  = 1
+	POSITION_STATUS_OFF = 2
+
 	DEFAULT_PAGE_SIZE = 10
 	DEFAULT_PAGE_NUM  = 1
 
@@ -54,28 +60,46 @@ type Account struct {
 }
 
 type Department struct {
-	Id         int
-	ChargeId   int
-	ChargeName string
-	Count      int
-	Desc       string
+	Id     int     `json:"id"`
+	Name   string  `json:"name"`
+	Charge *User   `orm:"rel(fk)" json:"charge"`
+	Desc   string  `json:"desc"`
+	Status int     `json:"status"` // 1: 在用 2：舍弃
+	Users  []*User `orm:"reverse(many)" json:"users"`
+}
+
+type DepartmentRet struct {
+	TotalNum    int64        `json:"total_num"`
+	PageNum     int          `json:"page_num"`
+	PageSize    int          `json:"page_size"`
+	Departments []Department `json:"departments"`
 }
 
 type Position struct {
-	Id   int
-	Desc string
+	Id     int     `json:"id"`
+	Name   string  `json:"name"`
+	Desc   string  `json:"desc"`
+	Users  []*User `orm:"reverse(many)" json:"users"`
+	Status int     `json:"status"` //1：在用 2：舍弃
+}
+
+type PositionRet struct {
+	TotalNum  int64      `json:"total_num"`
+	PageNum   int        `json:"page_num"`
+	PageSize  int        `json:"page_size"`
+	Positions []Position `json:"positions"`
 }
 
 type User struct {
-	Id           int     `json:"id"`
-	Name         string  `json:"name"` // TODO mail,personalPhoneNum,address
-	Sex          int     `json:"sex"`
-	Age          int     `json:"age"`
-	DepartmentId int     `json:"department_id"`
-	PositionId   int     `json:"position_id"` // 添加TODO，说明多少人的职位未分配，部门未分配
-	BoardDate    string  `json:"board_date"`  //入职时间
-	Item         []*Item `json:"item" orm:"reverse(many)"`
-	Status       int     `json:"status"` // 1:在职、2:离职
+	Id         int         `json:"id"`
+	Name       string      `json:"name"` // TODO mail,personalPhoneNum,address
+	Sex        int         `json:"sex"`
+	Age        int         `json:"age"`
+	Department *Department `orm:"rel(fk)" json:"department_id"`
+	Position   *Position   `orm:"rel(fk)" json:"position_id"` // 添加TODO，说明多少人的职位未分配，部门未分配
+	BoardDate  string      `json:"board_date"`                //入职时间
+	Item       []*Item     `json:"item" orm:"reverse(many)"`
+	Status     int         `json:"status"` // 1:在职、2:离职
 }
 
 type UserRet struct {
@@ -96,8 +120,8 @@ type Item struct {
 	SourcePlateForm string `json:"source_plate_form"`
 	ShopDate        string `json:"shop_date"`
 	IType           *IType `orm:"rel(fk)" json:"i_type"` //资产类别
-	Desc            string `json:"desc"`   // TODO 确定orm是否支持自动添加时间
-	Status          int    `json:"status"` //1：在库 2：已分配 3：回收
+	Desc            string `json:"desc"`                 // TODO 确定orm是否支持自动添加时间
+	Status          int    `json:"status"`               //1：在库 2：已分配 3：回收
 }
 
 // TODO 话费充值记录
@@ -110,12 +134,12 @@ type ItemRet struct {
 }
 
 type IType struct {
-	Id       int    `json:"id"`
-	ParentId int    `json:"parent_id"`
-	Name     string `json:"name"`
-	Desc     string `json:"desc"`
-	Status   int    `json:"status"` //1:on、2：off
-	Items []*Item `json:"items" orm:"reverse(many)"`
+	Id       int     `json:"id"`
+	ParentId int     `json:"parent_id"`
+	Name     string  `json:"name"`
+	Desc     string  `json:"desc"`
+	Status   int     `json:"status"` //1:on、2：off
+	Items    []*Item `json:"items" orm:"reverse(many)"`
 }
 
 type ITypeRet struct {
